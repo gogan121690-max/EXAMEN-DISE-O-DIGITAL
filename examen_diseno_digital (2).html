@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<title>Examen — Diseño Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d0f1a;--surface:#151724;--surface2:#1e2235;--border:#2a2f4a;
+  --accent:#7c6af5;--accent2:#4fd1c5;--accent3:#f6ad55;
+  --text:#e8eaf6;--muted:#7b82a8;
+  --success:#4fd1c5;--error:#fc8181;--warning:#f6ad55;
+  --radius:12px;--radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none;}
+input{-webkit-user-select:text!important;user-select:text!important;}
+body{
+  font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem;
+  background-image:radial-gradient(ellipse at 20% 20%,rgba(124,106,245,0.08) 0%,transparent 60%),
+                   radial-gradient(ellipse at 80% 80%,rgba(79,209,197,0.06) 0%,transparent 60%);
+}
+h1{font-weight:700;font-size:1.9rem;letter-spacing:-0.5px;margin-bottom:0.2rem;text-align:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.subtitle{color:var(--muted);font-size:0.85rem;margin-bottom:1.75rem;text-align:center}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.6rem;width:100%;max-width:620px;animation:fadeIn 0.3s ease;position:relative;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card h2{font-size:1.15rem;font-weight:600;margin-bottom:1.4rem}
+label{display:block;font-size:0.76rem;color:var(--muted);margin-bottom:0.35rem;letter-spacing:0.5px;text-transform:uppercase}
+input[type=text],input[type=password]{width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:0.7rem 1rem;color:var(--text);
+  font-family:'Outfit',sans-serif;font-size:1rem;margin-bottom:0.9rem;
+  transition:border-color 0.2s;outline:none;}
+input[type=text]:focus,input[type=password]:focus{border-color:var(--accent)}
+.btn{display:inline-block;padding:0.7rem 1.4rem;border-radius:var(--radius-sm);border:none;
+  font-family:'Outfit',sans-serif;font-size:0.93rem;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-primary:hover{background:#6a58e0}
+.btn-next{background:var(--accent);color:#fff;width:100%}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed}
+.btn-final{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;width:100%;font-size:1rem;padding:0.85rem}
+
+.progress-bar{height:4px;background:var(--surface2);border-radius:2px;margin-bottom:1.4rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.4s ease}
+.q-counter{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:3px 11px;font-size:0.8rem;color:var(--muted)}
+.type-tag{display:inline-block;padding:3px 11px;border-radius:20px;font-size:0.73rem;font-weight:600;letter-spacing:0.4px;margin-bottom:0.8rem}
+.tag-logos{background:rgba(124,106,245,0.15);color:var(--accent);border:1px solid rgba(124,106,245,0.3)}
+.tag-anat{background:rgba(79,209,197,0.12);color:var(--accent2);border:1px solid rgba(79,209,197,0.3)}
+.tag-pant{background:rgba(246,173,85,0.12);color:var(--warning);border:1px solid rgba(246,173,85,0.3)}
+
+.question-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:1.1rem 1rem;margin-bottom:1.1rem;font-size:1.02rem;line-height:1.5;color:var(--text);}
+
+.options-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.option{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.75rem 1rem;cursor:pointer;transition:all 0.15s;display:flex;align-items:flex-start;gap:10px;
+  font-size:0.92rem;line-height:1.4;}
+.option:hover{border-color:var(--accent);background:rgba(124,106,245,0.06)}
+.option.selected{border-color:var(--accent);background:rgba(124,106,245,0.12)}
+.option.correct{border-color:var(--success);background:rgba(79,209,197,0.12)}
+.option.wrong{border-color:var(--error);background:rgba(252,129,129,0.12)}
+.option.disabled{cursor:not-allowed;pointer-events:none}
+.opt-letter{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--text);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;flex-shrink:0;
+  font-family:'Space Mono',monospace;}
+.option.selected .opt-letter{background:var(--accent);color:#fff}
+.option.correct .opt-letter{background:var(--success);color:#0d0f1a}
+.option.wrong .opt-letter{background:var(--error);color:#fff}
+.opt-text{flex:1;padding-top:2px}
+
+.feedback{padding:10px 14px;border-radius:var(--radius-sm);font-size:0.86rem;margin-bottom:0.9rem;
+  display:flex;align-items:center;gap:8px;animation:fadeIn 0.3s ease;}
+.feedback-ok{background:rgba(79,209,197,0.12);color:var(--success);border:1px solid rgba(79,209,197,0.3)}
+.feedback-no{background:rgba(252,129,129,0.12);color:var(--error);border:1px solid rgba(252,129,129,0.3)}
+.feedback-saved{background:rgba(124,106,245,0.12);color:var(--accent);border:1px solid rgba(124,106,245,0.3)}
+
+.msg{padding:8px 13px;border-radius:var(--radius-sm);font-size:0.85rem;margin:0.65rem 0;display:flex;align-items:center;gap:7px}
+.msg-warn{background:rgba(246,173,85,0.12);color:var(--warning);border:1px solid rgba(246,173,85,0.25)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem;width:100%;max-width:340px;}
+.modal h3{font-size:1rem;font-weight:600;margin-bottom:0.35rem}
+.modal p{font-size:0.8rem;color:var(--muted);margin-bottom:1.1rem}
+.pin-wrap{margin-bottom:0.9rem}
+.pin-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.55rem 0.85rem;color:var(--text);font-family:'Space Mono',monospace;font-size:1rem;
+  letter-spacing:3px;outline:none;transition:border-color 0.2s;
+  -webkit-user-select:text!important;user-select:text!important;}
+.pin-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:7px}
+.btn-modal-ok{flex:1;background:var(--accent);color:#fff;padding:0.6rem;border:none;border-radius:var(--radius-sm);font-family:'Outfit',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;}
+.btn-modal-cancel{padding:0.6rem 0.9rem;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Outfit',sans-serif;font-size:0.88rem;cursor:pointer;}
+
+.final-hero{text-align:center;margin-bottom:1.5rem}
+.final-hero .emo{font-size:2.8rem;display:block;margin-bottom:0.65rem}
+.final-hero h2{font-size:1.5rem;font-weight:700;margin-bottom:0.2rem}
+.final-hero p{color:var(--muted);font-size:0.88rem}
+.total-score{display:flex;gap:10px;justify-content:center;margin-bottom:1.4rem;flex-wrap:wrap}
+.big-stat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.9rem 1.1rem;text-align:center;flex:1;min-width:90px}
+.big-stat .n{font-size:1.7rem;font-weight:700;color:var(--accent);display:block}
+.big-stat .l{font-size:0.72rem;color:var(--muted)}
+.topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:1.4rem}
+.topic-stat{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px;text-align:center}
+.topic-stat .sn{font-size:1rem;font-weight:700;display:block;margin-bottom:2px}
+.topic-stat .sl{font-size:0.65rem;color:var(--muted);display:block;line-height:1.3}
+.pass{color:var(--success)}.fail{color:var(--error)}
+.final-msg{text-align:center;font-size:0.85rem;color:var(--muted);margin-bottom:1.4rem;padding:0.9rem;background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.teacher-tap{position:fixed;bottom:0;right:0;width:52px;height:52px;opacity:0;cursor:pointer;z-index:50;}
+.block-screen{position:fixed;inset:0;background:#080a12;z-index:9999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;}
+.block-screen .bi{font-size:4rem;margin-bottom:1rem}
+.block-screen h2{font-size:1.5rem;font-weight:700;color:var(--error);margin-bottom:0.75rem}
+.block-screen p{color:var(--muted);font-size:0.88rem;max-width:320px;line-height:1.6}
+.block-screen .code{margin-top:1.5rem;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:0.75rem 1.5rem;
+  font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--warning);letter-spacing:1px;}
+.unblock-wrap{margin-top:1.25rem;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:280px}
+.unblock-wrap input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:0.6rem 1rem;color:var(--text);font-family:'Space Mono',monospace;font-size:1rem;
+  letter-spacing:2px;outline:none;text-align:center;
+  -webkit-user-select:text!important;user-select:text!important;}
+.unblock-wrap input:focus{border-color:var(--accent)}
+.unblock-wrap button{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);
+  padding:0.6rem 1.1rem;font-family:'Outfit',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;}
+
+.review-list{display:flex;flex-direction:column;gap:6px;margin-bottom:1.4rem;max-height:250px;overflow-y:auto;padding-right:4px;}
+.review-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius-sm);
+  background:var(--surface2);border:1px solid var(--border);font-size:0.78rem;}
+.review-item .rn{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:0.7rem;flex-shrink:0;font-family:'Space Mono',monospace;}
+.review-item.ok .rn{background:var(--success);color:#0d0f1a}
+.review-item.no .rn{background:var(--error);color:#fff}
+.review-item .rt{flex:1;color:var(--muted)}
+.review-item .ri{font-size:0.85rem}
+</style>
+</head>
+<body>
+<h1>Examen de Diseño Digital</h1>
+<p class="subtitle">Tipos de logotipos · Anatomía de las letras · Pantone<br>23 preguntas de opción múltiple</p>
+<div class="card" id="card"></div>
+
+<script>
+/* ══════════════════════════════════
+   BLOQUEO PERMANENTE
+══════════════════════════════════ */
+const BLOCK_KEY='diseno_blocked', WARN_KEY='diseno_warnings', BID_KEY='diseno_bid', SEED_KEY='diseno_seed';
+const MAX_WARN=2, MASTER_PWD='profe2025';
+
+function getWarnings(){return parseInt(localStorage.getItem(WARN_KEY)||'0',10);}
+function addWarning(){const w=getWarnings()+1;localStorage.setItem(WARN_KEY,w);return w;}
+function isBlocked(){return localStorage.getItem(BLOCK_KEY)==='1';}
+function setBlocked(){localStorage.setItem(BLOCK_KEY,'1');}
+function getBID(){let b=localStorage.getItem(BID_KEY);if(!b){b=Date.now().toString(36).toUpperCase();localStorage.setItem(BID_KEY,b);}return b;}
+
+function showBlockScreen(){
+  document.body.innerHTML='';
+  const bl=document.createElement('div');
+  bl.className='block-screen';
+  bl.innerHTML=
+    '<div class="bi">🔒</div>'+
+    '<h2>Acceso bloqueado</h2>'+
+    '<p>Se detectaron múltiples intentos de abandonar el examen.<br><br>'+
+    'Esta página ha sido bloqueada permanentemente en este dispositivo.<br><br>'+
+    'Comunícate con tu profesor para desbloquearla.</p>'+
+    '<div class="code">Código: '+getBID()+'</div>'+
+    '<div class="teacher-tap" onclick="showUnlockForm(this.parentNode)"></div>';
+  document.body.appendChild(bl);
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+}
+
+function showUnlockForm(parent){
+  if(document.getElementById('unlock-wrap')) return;
+  const w=document.createElement('div');
+  w.className='unblock-wrap'; w.id='unlock-wrap';
+  w.innerHTML=
+    '<input type="password" id="pwd-inp" placeholder="Contraseña del profesor" autocomplete="off"/>'+
+    '<button onclick="tryUnlock()">Desbloquear</button>'+
+    '<div id="pwd-err" style="font-size:0.76rem;color:#fc8181;min-height:16px"></div>';
+  parent.appendChild(w);
+  document.getElementById('pwd-inp').focus();
+}
+
+function tryUnlock(){
+  const val=(document.getElementById('pwd-inp').value||'').trim();
+  if(val===MASTER_PWD){
+    localStorage.removeItem(BLOCK_KEY);
+    localStorage.removeItem(WARN_KEY);
+    localStorage.removeItem(SEED_KEY);
+    location.reload();
+  } else {
+    document.getElementById('pwd-err').textContent='Contraseña incorrecta.';
+    document.getElementById('pwd-inp').value='';
+  }
+}
+
+if(isBlocked()) showBlockScreen();
+
+/* ══════════════════════════════════
+   ANTI-TRAMPA
+══════════════════════════════════ */
+let warnOverlayActive=false;
+function triggerWarning(reason){
+  if(isBlocked()) return;
+  const w=addWarning();
+  if(w>=MAX_WARN){setBlocked();showBlockScreen();return;}
+  if(warnOverlayActive) return;
+  warnOverlayActive=true;
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;';
+  ov.innerHTML=
+    '<div style="font-size:3rem;margin-bottom:1rem">⚠️</div>'+
+    '<h2 style="color:#fc8181;font-size:1.3rem;font-weight:700;margin-bottom:0.6rem">¡Actividad detectada!</h2>'+
+    '<p style="color:#7b82a8;font-size:0.86rem;max-width:300px;line-height:1.6">'+reason+'</p>'+
+    '<p style="color:#fc8181;font-size:0.82rem;margin-top:0.75rem;font-weight:600">Advertencia '+w+' de '+MAX_WARN+'. La próxima vez la página quedará bloqueada permanentemente.</p>'+
+    '<button onclick="this.parentNode.remove();warnOverlayActive=false;" style="margin-top:1.4rem;background:#7c6af5;color:#fff;border:none;padding:0.7rem 2rem;border-radius:8px;font-family:Outfit,sans-serif;font-size:0.92rem;font-weight:600;cursor:pointer;">Volver al examen</button>';
+  document.body.appendChild(ov);
+}
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&['c','x','a','p','s'].includes(e.key.toLowerCase())){e.preventDefault();if(['p','s'].includes(e.key.toLowerCase()))triggerWarning('Atajo de teclado no permitido.');}
+  if(e.key==='PrintScreen'){e.preventDefault();triggerWarning('Intento de captura de pantalla.');}
+});
+document.addEventListener('copy',e=>{if(e.target.tagName!=='INPUT'){e.preventDefault();triggerWarning('Intento de copiar contenido del examen.');}});
+document.addEventListener('selectstart',e=>{if(e.target.tagName!=='INPUT')e.preventDefault();});
+
+/* ── Detección extendida para móviles y pantalla dividida ── */
+
+/* 1) Cambio de pestaña / app (escritorio y móvil con pantalla completa) */
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&state==='game')triggerWarning('Se detectó un cambio de pantalla o aplicación durante el examen.');
+});
+
+/* 2) La ventana pierde el foco (otra app encima, ventana flotante, notificación interactiva) */
+window.addEventListener('blur',()=>{
+  if(state==='game')triggerWarning('La ventana del examen perdió el foco. No salgas del examen ni abras otra aplicación.');
+});
+
+/* 3) Detección de pantalla dividida o ventana flotante en móvil
+   Cuando el alumno activa split-screen, el ancho/alto de la ventana cambia bruscamente
+   sin que cambie la orientación del dispositivo. Guardamos el tamaño inicial y
+   detectamos reducciones significativas. */
+let initialWidth=0, initialHeight=0, initialRatio=0, sizeBaseline=false;
+function setSizeBaseline(){
+  initialWidth=window.innerWidth;
+  initialHeight=window.innerHeight;
+  initialRatio=initialWidth/initialHeight;
+  sizeBaseline=true;
+}
+window.addEventListener('resize',()=>{
+  if(state!=='game'||!sizeBaseline) return;
+  const w=window.innerWidth, h=window.innerHeight;
+  /* reducción significativa en alto o ancho (>20%) sin cambio de orientación
+     indica pantalla dividida o ventana flotante */
+  const widthShrunk = w < initialWidth*0.80;
+  const heightShrunk = h < initialHeight*0.80;
+  const newRatio = w/h;
+  /* si el ratio cambió mucho pero ambos lados se redujeron => split screen probable */
+  if((widthShrunk||heightShrunk) && Math.abs(newRatio-initialRatio)>0.15){
+    triggerWarning('Se detectó pantalla dividida o ventana flotante. Usa el examen en pantalla completa.');
+    /* actualizar baseline para no repetir advertencia inmediatamente */
+    setTimeout(setSizeBaseline,1500);
+  } else if(widthShrunk||heightShrunk){
+    /* también disparar si cualquier dimensión se redujo mucho aunque el ratio sea similar */
+    triggerWarning('Se detectó un cambio de tamaño de la ventana. Usa el examen en pantalla completa.');
+    setTimeout(setSizeBaseline,1500);
+  }
+});
+
+/* 4) En móvil/tablet, detectar si la barra del navegador o teclado afecta significativamente.
+   Solo establecemos baseline cuando el alumno ya está en el examen y la ventana está estable. */
+function tryEstablishBaseline(){
+  if(state==='game' && !sizeBaseline){
+    setTimeout(()=>{ if(state==='game') setSizeBaseline(); }, 800);
+  }
+}
+
+/* ══════════════════════════════════
+   DATOS DEL EXAMEN
+   3 puntos totales ÷ 23 preguntas
+══════════════════════════════════ */
+const PLAYER={name:'',apellidos:'',grupo:''};
+let currentQ=0, answered=false, selected=-1, state='login';
+const ANSWERS=[];
+
+const TOPIC_LABELS={logos:'TIPOS DE LOGOTIPOS',anat:'ANATOMÍA DE LAS LETRAS',pant:'PANTONE'};
+const TOPIC_CSS={logos:'tag-logos',anat:'tag-anat',pant:'tag-pant'};
+
+const QUESTIONS=[
+/* ── TIPOS DE LOGOTIPOS (9) ── */
+{topic:'logos', q:'¿Qué elemento caracteriza a un <b>logotipo</b> (logo) puro?',
+  opts:['Solo una imagen o símbolo','Solo texto o tipografía','Texto e imagen fusionados','Texto e imagen separados'], ans:1},
+{topic:'logos', q:'El <b>isotipo</b> se define como:',
+  opts:['Un diseño compuesto por letras y símbolo unidos','Un símbolo gráfico reconocible sin necesidad de texto','Una tipografía personalizada','Un logotipo con eslogan'], ans:1},
+{topic:'logos', q:'El <b>imagotipo</b> se distingue porque:',
+  opts:['El texto y el símbolo están fusionados en una sola unidad','Tiene texto y símbolo, pero pueden presentarse juntos o por separado sin afectar la marca','Solo tiene imagen','Solo tiene texto'], ans:1},
+{topic:'logos', q:'El <b>isologo</b> se caracteriza por:',
+  opts:['Tener texto e imagen fundidos e inseparables','Tener el texto y el símbolo por separado','No contener imagen','Ser únicamente tipográfico'], ans:0},
+{topic:'logos', q:'El logotipo de <b>Coca-Cola</b> (solo la palabra con su tipografía característica) es un ejemplo de:',
+  opts:['Isotipo','Imagotipo','Logotipo','Isologo'], ans:2},
+{topic:'logos', q:'La manzana mordida de <b>Apple</b> (sin el nombre) es un ejemplo de:',
+  opts:['Logotipo','Isotipo','Imagotipo','Isologo'], ans:1},
+{topic:'logos', q:'El logo de <b>Adidas</b> con las tres tiras y la palabra "adidas" al lado se clasifica como:',
+  opts:['Isologo','Imagotipo','Logotipo','Isotipo'], ans:1},
+{topic:'logos', q:'Cuando el símbolo y el texto <b>no pueden separarse</b> porque forman una unidad indivisible, estamos ante un:',
+  opts:['Imagotipo','Logotipo','Isologo','Isotipo'], ans:2},
+{topic:'logos', q:'¿Cuál es la principal ventaja de un <b>isotipo</b>?',
+  opts:['Es fácil de recordar y funciona sin idioma','Siempre incluye el nombre de la empresa','Requiere mucho texto','Solo funciona en color'], ans:0},
+
+/* ── ANATOMÍA DE LAS LETRAS (9) ── */
+{topic:'anat', q:'¿Qué es la <b>anatomía de las letras</b>?',
+  opts:['El estudio del origen histórico del alfabeto','El estudio de las partes y elementos que componen cada carácter tipográfico','La clasificación de las familias tipográficas por estilo','La técnica para dibujar letras a mano'], ans:1},
+{topic:'anat', q:'El <b>asta</b> de una letra se refiere a:',
+  opts:['Los trazos pequeños en los extremos','El trazo principal vertical u oblicuo','El espacio cerrado dentro de una letra','La parte curva de la letra'], ans:1},
+{topic:'anat', q:'El <b>ojal</b> u <b>ojo</b> de una letra es:',
+  opts:['El punto sobre la "i" y la "j"','El espacio cerrado o semicerrado dentro de letras como "o", "a" o "e"','El trazo diagonal de la "k"','El remate de las letras'], ans:1},
+{topic:'anat', q:'El <b>travesaño</b> es:',
+  opts:['El trazo horizontal que cruza o conecta dos astas, como en la "A" o la "H"','El remate decorativo al final de un asta','La parte inferior de la letra "g"','El espacio cerrado dentro de una letra'], ans:0},
+{topic:'anat', q:'La <b>panza</b> o <b>barriga</b> de una letra es:',
+  opts:['El trazo diagonal de letras como "K" o "R"','La curva cerrada o semicerrada que se proyecta desde el asta, como en la "b", "d", "p" o "q"','El remate inferior de las mayúsculas','El punto de la "i"'], ans:1},
+{topic:'anat', q:'El <b>vértice</b> en tipografía es:',
+  opts:['El punto donde se unen dos trazos formando un ángulo, como en la punta de la "A" o la "V"','El espacio interior de una letra cerrada','La curva superior de la "S"','El trazo horizontal de la "E"'], ans:0},
+{topic:'anat', q:'La <b>oreja</b> es:',
+  opts:['Un pequeño trazo que sobresale de letras como la "g" minúscula','La parte superior de las mayúsculas','El cuerpo principal de la letra','El espacio entre palabras'], ans:0},
+{topic:'anat', q:'La <b>cola</b> se encuentra típicamente en letras como:',
+  opts:['Q, R, K','A, E, I','M, N, H','O, C, G'], ans:0},
+{topic:'anat', q:'El <b>brazo</b> de una letra es:',
+  opts:['Un trazo horizontal o inclinado que sale del asta y queda libre por un extremo (como en E, F, T)','La curva completa de una "o"','El remate superior','La parte que baja bajo la línea base'], ans:0},
+
+/* ── PANTONE (5) ── */
+{topic:'pant', q:'El <b>sistema Pantone</b> (PMS) es:',
+  opts:['Un software de diseño gráfico','Un sistema estandarizado de identificación de colores para la impresión','Un tipo de papel','Una marca de tintas exclusiva para pintores'], ans:1},
+{topic:'pant', q:'Las siglas <b>PMS</b> significan:',
+  opts:['Print Matching System','Pantone Matching System','Professional Media Standard','Print Media Service'], ans:1},
+{topic:'pant', q:'La principal ventaja del sistema Pantone es:',
+  opts:['Que es gratis','Que garantiza que un color se reproduzca igual sin importar la imprenta o país','Que solo funciona en pantalla','Que mezcla colores digitalmente'], ans:1},
+{topic:'pant', q:'Los colores Pantone se identifican mediante:',
+  opts:['Un nombre común (rojo, azul, etc.)','Un código numérico único (ej. PANTONE 485 C)','Solo porcentajes CMYK','Valores hexadecimales'], ans:1},
+{topic:'pant', q:'Pantone publica cada año un:',
+  opts:['Libro de tipografías','Color del año','Catálogo de logotipos','Software gratuito'], ans:1}
+];
+
+/* ══════════════════════════════════
+   ALEATORIZACIÓN POR DISPOSITIVO
+   Cada dispositivo recibe un orden único de preguntas y opciones,
+   generado a partir de una semilla guardada en localStorage.
+   Si el alumno recarga, el orden se mantiene (no puede "rehacer" el examen).
+══════════════════════════════════ */
+function getSeed(){
+  let s=localStorage.getItem(SEED_KEY);
+  if(!s){
+    s=(Date.now()*Math.random()).toString(36)+Math.random().toString(36).slice(2);
+    localStorage.setItem(SEED_KEY,s);
+  }
+  /* convertir string en número entero */
+  let h=2166136261;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
+  return h>>>0;
+}
+/* generador pseudoaleatorio determinista (mulberry32) */
+function mulberry32(seed){
+  return function(){
+    seed|=0;seed=seed+0x6D2B79F5|0;
+    let t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return ((t^t>>>14)>>>0)/4294967296;
+  };
+}
+/* Fisher-Yates con RNG determinista */
+function shuffle(arr,rng){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(rng()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+/* construir el examen aleatorizado */
+function buildExam(){
+  const rng=mulberry32(getSeed());
+  /* 1) mezclar orden de preguntas */
+  const order=shuffle(QUESTIONS.map((_,i)=>i),rng);
+  /* 2) para cada pregunta, mezclar orden de opciones y recalcular índice de respuesta correcta */
+  const exam=[];
+  for(const idx of order){
+    const orig=QUESTIONS[idx];
+    const optOrder=shuffle([0,1,2,3],rng);
+    const newOpts=optOrder.map(i=>orig.opts[i]);
+    const newAns=optOrder.indexOf(orig.ans);
+    exam.push({topic:orig.topic,q:orig.q,opts:newOpts,ans:newAns});
+  }
+  return exam;
+}
+const EXAM=buildExam();
+
+const TOTAL_Q = EXAM.length;
+const PTS_TOTAL = 3;
+const PTS_PER_Q = PTS_TOTAL / TOTAL_Q;
+
+/* ══════════════════════════════════
+   RENDER
+══════════════════════════════════ */
+const card=document.getElementById('card');
+function render(){
+  if(isBlocked()) return;
+  if(state==='login') renderLogin();
+  else if(state==='game') renderGame();
+  else renderFinal();
+}
+
+function renderLogin(){
+  card.innerHTML=
+    '<h2>Registro del alumno</h2>'+
+    '<label>Nombre(s)</label><input type="text" id="inp-name" placeholder="Tu nombre"/>'+
+    '<label>Apellidos</label><input type="text" id="inp-ap" placeholder="Tus apellidos"/>'+
+    '<label>Grupo</label><input type="text" id="inp-grp" placeholder="Ej: 2A"/>'+
+    '<div id="lerr"></div>'+
+    '<button class="btn btn-primary" style="margin-top:0.2rem" onclick="startExam()">Comenzar examen ▶</button>';
+  document.getElementById('inp-name').focus();
+}
+
+function startExam(){
+  const n=document.getElementById('inp-name').value.trim();
+  const a=document.getElementById('inp-ap').value.trim();
+  const g=document.getElementById('inp-grp').value.trim();
+  if(!n||!a||!g){document.getElementById('lerr').innerHTML='<div class="msg msg-warn">⚠ Completa todos los campos.</div>';return;}
+  PLAYER.name=n;PLAYER.apellidos=a;PLAYER.grupo=g;
+  currentQ=0;answered=false;selected=-1;
+  ANSWERS.length=0;
+  state='game';render();
+  tryEstablishBaseline();
+}
+
+function renderGame(){
+  const q=EXAM[currentQ];
+  const pct=((currentQ+1)/TOTAL_Q*100).toFixed(1);
+  const tag='<span class="type-tag '+TOPIC_CSS[q.topic]+'">'+TOPIC_LABELS[q.topic]+'</span>';
+  const letters=['A','B','C','D'];
+
+  let optsH='';
+  for(let i=0;i<q.opts.length;i++){
+    let cls='option';
+    if(answered){
+      cls+=' disabled';
+      if(i===selected) cls+=' selected';
+    } else if(i===selected){
+      cls+=' selected';
+    }
+    optsH+='<div class="'+cls+'" onclick="selectOpt('+i+')">'+
+      '<div class="opt-letter">'+letters[i]+'</div>'+
+      '<div class="opt-text">'+q.opts[i]+'</div>'+
+    '</div>';
+  }
+
+  let fb='';
+  if(answered){
+    fb='<div class="feedback feedback-saved">✓ Respuesta registrada</div>';
+  }
+
+  let btn='';
+  if(!answered){
+    btn='<button class="btn btn-next" onclick="submitAns()" '+(selected<0?'disabled':'')+'>Confirmar respuesta →</button>';
+  } else if(currentQ<TOTAL_Q-1){
+    btn='<button class="btn btn-next" onclick="nextQ()">Siguiente pregunta →</button>';
+  } else {
+    btn='<button class="btn btn-final" onclick="showFinal()">Finalizar examen 🏆</button>';
+  }
+
+  card.innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6rem;flex-wrap:wrap;gap:5px">'+
+      '<span style="font-size:0.78rem;color:var(--muted)">'+PLAYER.name+' '+PLAYER.apellidos+
+        ' · <span style="color:var(--accent)">'+PLAYER.grupo+'</span></span>'+
+      '<div class="q-counter">Pregunta '+(currentQ+1)+' de '+TOTAL_Q+'</div>'+
+    '</div>'+
+    '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+    tag+
+    '<div class="question-box">'+q.q+'</div>'+
+    '<div class="options-list">'+optsH+'</div>'+
+    fb+
+    btn;
+}
+
+function selectOpt(i){
+  if(answered) return;
+  selected=i;
+  render();
+}
+
+function submitAns(){
+  if(selected<0) return;
+  ANSWERS[currentQ]=selected;
+  answered=true;
+  render();
+}
+
+function nextQ(){
+  currentQ++;
+  answered=false;
+  selected=-1;
+  render();
+}
+
+function showFinal(){state='final';render();}
+
+/* ══════════════════════════════════
+   PANTALLA FINAL CON ESTADÍSTICAS
+══════════════════════════════════ */
+function renderFinal(){
+  let totalOk=0;
+  const byTopic={logos:{ok:0,total:0},anat:{ok:0,total:0},pant:{ok:0,total:0}};
+  for(let i=0;i<TOTAL_Q;i++){
+    const q=EXAM[i];
+    byTopic[q.topic].total++;
+    if(ANSWERS[i]===q.ans){totalOk++;byTopic[q.topic].ok++;}
+  }
+
+  const calif=(totalOk*PTS_PER_Q);
+  const califStr=calif.toFixed(2);
+
+  const topicOrder=['logos','anat','pant'];
+  const topicShort={logos:'Logotipos',anat:'Anatomía',pant:'Pantone'};
+  let topicsH='';
+  for(const t of topicOrder){
+    const d=byTopic[t];
+    const pts=(d.ok*PTS_PER_Q).toFixed(2);
+    const col=d.ok>=d.total*0.6?'pass':'fail';
+    topicsH+='<div class="topic-stat">'+
+      '<span class="sn '+col+'">'+pts+' pts</span>'+
+      '<span class="sl">'+d.ok+'/'+d.total+' aciertos</span>'+
+      '<span class="sl">'+topicShort[t]+'</span>'+
+    '</div>';
+  }
+
+  let reviewH='';
+  for(let i=0;i<TOTAL_Q;i++){
+    const q=EXAM[i];
+    const ok=ANSWERS[i]===q.ans;
+    reviewH+='<div class="review-item '+(ok?'ok':'no')+'">'+
+      '<div class="rn">'+(i+1)+'</div>'+
+      '<div class="rt">'+topicShort[q.topic]+'</div>'+
+      '<div class="ri">'+(ok?'✓':'✗')+'</div>'+
+    '</div>';
+  }
+
+  const nota=parseFloat(califStr);
+  const msg=nota>=2.7?'¡Excelente dominio de los temas! 🌟':nota>=2?'¡Buen trabajo! Sigue practicando. 💪':nota>=1?'Repasa los temas, ¡tú puedes mejorar! 📚':'Es momento de estudiar más a fondo. 📖';
+
+  card.innerHTML=
+    '<div class="final-hero"><span class="emo">🏆</span><h2>Examen completado</h2>'+
+    '<p>'+PLAYER.name+' '+PLAYER.apellidos+' · Grupo <strong>'+PLAYER.grupo+'</strong></p></div>'+
+    '<div class="total-score">'+
+      '<div class="big-stat"><span class="n">'+totalOk+'/'+TOTAL_Q+'</span><span class="l">Aciertos</span></div>'+
+      '<div class="big-stat"><span class="n" style="color:var(--accent2)">'+califStr+'</span><span class="l">Calificación / 3 pts</span></div>'+
+      '<div class="big-stat"><span class="n" style="color:var(--accent3)">'+PTS_PER_Q.toFixed(3)+'</span><span class="l">Pts por acierto</span></div>'+
+    '</div>'+
+    '<p style="font-size:0.74rem;color:var(--muted);text-align:center;margin-bottom:0.65rem;text-transform:uppercase;letter-spacing:0.4px">Desempeño por tema</p>'+
+    '<div class="topics-grid">'+topicsH+'</div>'+
+    '<p style="font-size:0.74rem;color:var(--muted);text-align:center;margin-bottom:0.65rem;text-transform:uppercase;letter-spacing:0.4px">Revisión de respuestas</p>'+
+    '<div class="review-list">'+reviewH+'</div>'+
+    '<div class="final-msg">'+msg+'</div>'+
+    '<div class="teacher-tap" onclick="showTeacherUnlock()"></div>';
+}
+
+function showTeacherUnlock(){
+  if(document.getElementById('teacher-modal')) return;
+  const m=document.createElement('div');
+  m.className='modal-overlay';m.id='teacher-modal';
+  m.innerHTML='<div class="modal">'+
+    '<h3>Acceso profesor</h3><p>Contraseña para reiniciar el examen.</p>'+
+    '<div class="pin-wrap">'+
+    '<label>Contraseña</label>'+
+    '<input type="password" class="pin-input" id="tpwd" autocomplete="off"/>'+
+    '<div id="tpwd-err" style="font-size:0.76rem;color:var(--error);margin-top:4px;min-height:16px"></div>'+
+    '</div>'+
+    '<div class="modal-btns">'+
+    '<button class="btn-modal-cancel" onclick="document.getElementById(\'teacher-modal\').remove()">Cancelar</button>'+
+    '<button class="btn-modal-ok" onclick="confirmTeacher()">Confirmar</button>'+
+    '</div></div>';
+  document.body.appendChild(m);
+  document.getElementById('tpwd').focus();
+}
+function confirmTeacher(){
+  const val=(document.getElementById('tpwd').value||'').trim();
+  if(val===MASTER_PWD){
+    localStorage.removeItem(BLOCK_KEY);
+    localStorage.removeItem(WARN_KEY);
+    localStorage.removeItem(SEED_KEY);
+    document.getElementById('teacher-modal').remove();
+    PLAYER.name='';PLAYER.apellidos='';PLAYER.grupo='';
+    currentQ=0;answered=false;selected=-1;ANSWERS.length=0;
+    location.reload();
+  } else {
+    document.getElementById('tpwd-err').textContent='Contraseña incorrecta.';
+    document.getElementById('tpwd').value='';
+  }
+}
+
+render();
+</script>
+</body>
+</html>
